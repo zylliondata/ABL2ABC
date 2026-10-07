@@ -1,0 +1,16 @@
+{
+  "id": "mold-temperature-control",
+  "name": "Mold Temperature Control",
+  "category": "control",
+  "industry": "die_casting",
+  "description": "Regulate die/platen temperature to keep mold temperature within the process window and reduce porosity defects.",
+  "inputs": {
+    "setpoint": "tmax_die",
+    "feedback": "mold_temperature"
+  },
+  "outputs": {
+    "controlled_variable": "mold_temperature",
+    "effect": "porosity_rate"
+  },
+  "source_amts": ["AMT_DC_THERMO_002"]
+}

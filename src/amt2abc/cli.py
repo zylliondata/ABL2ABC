@@ -171,4 +171,10 @@ def compile(goal: str, output_format: str) -> None:  # noqa: A001
     click.echo(
         f"Influencing AMTs: {len(subgraph['amts']) if subgraph else 0}"
     )
-    click.echo(f"Recommended ABCs: {len(result['recommended_abcs'])}")
+    abcs = result["recommended_abcs"]
+    click.echo(f"Recommended ABCs: {len(abcs)}")
+    for abc in abcs:
+        click.echo(
+            f"  {abc['id']:<30} category={abc['category']} "
+            f"score={abc['score']} from={','.join(abc['source_amts'])}"
+        )

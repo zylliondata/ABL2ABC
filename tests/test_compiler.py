@@ -1,6 +1,7 @@
 from amt2abc.compiler.graph import AMTGraph
 from amt2abc.compiler.matcher import GoalMatcher, GraphMatcher
 from amt2abc.compiler.pipeline import CompilerPipeline
+from amt2abc.models.abc import ABC
 from amt2abc.models.amt import AMT, Triplet
 from amt2abc.models.gs import GoalStatement
 
@@ -142,6 +143,58 @@ def test_pipeline_no_data(tmp_path):
     result = pipeline.compile("reduce porosity")
     assert result["goal"] == "reduce porosity"
     assert result["matched_amts"] == []
+
+
+def test_pipeline_recommends_abcs():
+    pipeline = CompilerPipeline()  # uses data/amt + data/abc defaults
+    result = pipeline.compile("reduce porosity rate")
+    assert len(result["matched_amts"]) == 3
+    assert len(result["recommended_abcs"]) == 3
+    abcs = {a["id"]: a for a in result["recommended_abcs"]}
+    assert "mold-temperature-control" in abcs
+    assert abcs["mold-temperature-control"]["source_amts"] == [
+        "AMT_DC_THERMO_002"
+    ]
+    assert abcs["mold-temperature-control"]["matched_amts"] == 1
+    assert abcs["mold-temperature-control"]["category"] == "control"
+
+
+def test_pipeline_recommend_sums_scores():
+    amt_a = AMT(
+        id="m1",
+        name="temp control",
+        domain="test",
+        triplets=[Triplet(cause="temp", effect="defect", relation="increases", mechanism="m")],
+    )
+    amt_b = AMT(
+        id="m2",
+        name="vacuum control",
+        domain="test",
+        triplets=[Triplet(cause="vacuum", effect="defect", relation="decreases", mechanism="m")],
+    )
+    abc = ABC(
+        id="abc1",
+        name="Defect Control ABC",
+        category="control",
+        industry="test",
+        source_amts=["m1", "m2"],
+    )
+    pipeline = CompilerPipeline(amt_dir="data/amt")
+    pipeline._amts = [amt_a, amt_b]
+    pipeline._abc_index = pipeline._index_abcs([abc])
+    recommended = pipeline._recommend_abcs([(amt_a, 0.8), (amt_b, 0.3)])
+    assert recommended == [
+        {
+            "id": "abc1",
+            "name": "Defect Control ABC",
+            "category": "control",
+            "industry": "test",
+            "source_amts": ["m1", "m2"],
+            "score": 1.1,
+            "matched_amts": 2,
+            "avg_amt_score": 0.55,
+        }
+    ]
 
 
 def test_graph_matcher_target_resolution():

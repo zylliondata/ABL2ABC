@@ -1,0 +1,16 @@
+{
+  "id": "shot-speed-control",
+  "name": "Shot Speed Control",
+  "category": "control",
+  "industry": "die_casting",
+  "description": "Adjust plunger shot speed profile to control cavity fill behavior and porosity formation.",
+  "inputs": {
+    "setpoint": "injection_speed",
+    "feedback": "fill_velocity"
+  },
+  "outputs": {
+    "controlled_variable": "injection_speed",
+    "effect": "porosity_rate"
+  },
+  "source_amts": ["AMT_DC_FLUID_001"]
+}

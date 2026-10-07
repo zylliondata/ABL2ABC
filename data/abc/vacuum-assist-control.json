@@ -1,0 +1,16 @@
+{
+  "id": "vacuum-assist-control",
+  "name": "Vacuum Assist Control",
+  "category": "control",
+  "industry": "die_casting",
+  "description": "Coordinate vacuum valve timing to evacuate cavity gas and suppress gas porosity.",
+  "inputs": {
+    "setpoint": "vacuum_degree",
+    "trigger": "shot_start"
+  },
+  "outputs": {
+    "controlled_variable": "vacuum_level",
+    "effect": "porosity_rate"
+  },
+  "source_amts": ["AMT_DC_VACUUM_001"]
+}
