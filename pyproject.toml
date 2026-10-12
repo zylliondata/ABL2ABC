@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry]
 name = "amt2abc"
 version = "0.1.0"
-description = "Atomic Mechanism Triplets to Atomic Business Capabilities - An Industrial Software Compiler"
+description = "Atomic Business Loops to Atomic Business Capabilities - An Industrial Software Compiler"
 license = "Apache-2.0"
 authors = ["AMT2ABC Contributors"]
 readme = "README.md"

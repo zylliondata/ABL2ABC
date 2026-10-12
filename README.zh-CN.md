@@ -1,23 +1,23 @@
-# AMT2ABC：从"原子机理三元组"到"原子业务能力"的工业软件 Compiler
+# ABL2ABC：从"原子业务闭环"到"原子业务能力"的工业软件 Compiler
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![CI](https://github.com/zylliondata/AMT2ABC/actions/workflows/ci.yml/badge.svg)](https://github.com/zylliondata/AMT2ABC/actions/workflows/ci.yml)
-[![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white)](https://github.com/zylliondata/AMT2ABC)
+[![CI](https://github.com/zylliondata/ABL2ABC/actions/workflows/ci.yml/badge.svg)](https://github.com/zylliondata/ABL2ABC/actions/workflows/ci.yml)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white)](https://github.com/zylliondata/ABL2ABC)
 [![Gitee](https://img.shields.io/badge/Gitee-C71D23?logo=gitee&logoColor=white)](https://gitee.com/zylliondata/AMT2ABC)
 
 [English](./README.md) | **简体中文**
 
 ---
 
-**AMT2ABC** 是一个开源的工业软件能力编译生态。它将工业机理（Atomic Mechanism Triplet, AMT）自动编译为可复用的原子业务能力（Atomic Business Capability, ABC），为工业智能化提供从业务目标到可执行应用的自动化编译能力。
+**ABL2ABC** 是一个开源的工业软件能力编译生态。它以原子业务闭环（Atomic Business Loop, ABL）为业务输入，将工业机理（Atomic Mechanism Triplet, AMT）自动编译为可复用的原子业务能力（Atomic Business Capability, ABC），为工业智能化提供从业务目标到可执行应用的自动化编译能力。
 
 > 工业软件缺的不是AI，而是Compiler。  
-> —— AMT2ABC 核心主张
+> —— ABL2ABC 核心主张
 
-## 为什么需要 AMT2ABC？
+## 为什么需要 ABL2ABC？
 
-传统工业软件开发长期陷入"项目制、烟囱式、变更代价高"的困境。不同产线、不同工艺之间难以复用能力，每次变更都需要大量手工修改代码。AMT2ABC 借鉴华为韬(τ)定律和 RISC+Compiler 的历史经验，将复杂度从底层代码转移到实例配置层，让系统自动理解业务目标并编译出推荐的能力组合。
+传统工业软件开发长期陷入"项目制、烟囱式、变更代价高"的困境。不同产线、不同工艺之间难以复用能力，每次变更都需要大量手工修改代码。ABL2ABC 借鉴华为韬(τ)定律和 RISC+Compiler 的历史经验，将复杂度从底层代码转移到实例配置层，让系统自动理解业务目标并编译出推荐的能力组合。
 
 ## 核心概念
 
@@ -26,7 +26,7 @@
 | **AMT** | Atomic Mechanism Triplet | 原子机理三元组，由 Cause→Effect→CAUSAL 组成的最小工业因果单元 |
 | **SECP** | Structure, Event, Configuration, Process, Formula | 工业软件的五维语法，为 AMT 提供统一的结构化标签 |
 | **ABC** | Atomic Business Capability | 原子业务能力，可独立部署、跨场景复用的最小软件能力单元 |
-| **Compiler** | AMT2ABC Compiler | 从业务目标（GS）自动抽取 AMT Cluster，封装为 ABC 并编排为 App/Agent 的系统 |
+| **Compiler** | ABL2ABC Compiler | 从业务目标（GS）自动抽取 AMT Cluster，封装为 ABC 并编排为 App/Agent 的系统 |
 
 ### AMT Triplet 结构
 
@@ -100,12 +100,12 @@ Working Domain → Mechanism → AMT Triplet → AMT Graph
 
 ```bash
 # 从 GitHub 克隆
-git clone https://github.com/zylliondata/AMT2ABC.git
+git clone https://github.com/zylliondata/ABL2ABC.git
 
 # 从 Gitee 克隆（国内访问更快）
 git clone https://gitee.com/zylliondata/AMT2ABC.git
 
-cd AMT2ABC
+cd ABL2ABC
 # 具体安装步骤见 docs/installation.md（即将补充）
 ```
 
@@ -154,11 +154,11 @@ Compiler 输出推荐的 ABC 组合（JSON 格式示例）：
 
 ## 许可证
 
-[Apache 2.0 License](LICENSE) © AMT2ABC Contributors
+[Apache 2.0 License](LICENSE) © ABL2ABC Contributors
 
 ## 联系我们
 
-[![GitHub Issues](https://img.shields.io/badge/GitHub%20Issues-181717?logo=github&logoColor=white)](https://github.com/zylliondata/AMT2ABC/issues)
+[![GitHub Issues](https://img.shields.io/badge/GitHub%20Issues-181717?logo=github&logoColor=white)](https://github.com/zylliondata/ABL2ABC/issues)
 [![Gitee Issues](https://img.shields.io/badge/Gitee%20Issues-C71D23?logo=gitee&logoColor=white)](https://gitee.com/zylliondata/AMT2ABC/issues)
-[![GitHub Discussions](https://img.shields.io/badge/GitHub%20Discussions-181717?logo=github&logoColor=white)](https://github.com/zylliondata/AMT2ABC/discussions)
+[![GitHub Discussions](https://img.shields.io/badge/GitHub%20Discussions-181717?logo=github&logoColor=white)](https://github.com/zylliondata/ABL2ABC/discussions)
 [![邮箱](https://img.shields.io/badge/邮箱-info%40zylliondata.com-blue?logo=gmail&logoColor=white)](mailto:info@zylliondata.com)
