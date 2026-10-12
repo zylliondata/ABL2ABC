@@ -10,7 +10,7 @@
 
 ---
 
-**ABL2ABC** is an open-source ecosystem for compiling industrial software capabilities. It takes Atomic Business Loops (**ABLs**) as business input, and automatically compiles industrial mechanisms, expressed as Atomic Mechanism Triplets (**AMTs**), into reusable Atomic Business Capabilities (**ABCs**), enabling automated transformation from business goals to executable industrial applications.
+**ABL2ABC** is an open-source ecosystem for compiling industrial software capabilities. It takes Atomic Business Loop (**ABL**) as business input, and automatically compiles industrial mechanisms, expressed as Atomic Mechanism Triplets (**AMTs**), into reusable Atomic Business Capabilities (**ABCs**), enabling automated transformation from business goals to executable industrial applications.
 
 > What industrial software lacks is not AI, but a Compiler.
 > — ABL2ABC core thesis
