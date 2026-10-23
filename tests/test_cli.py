@@ -85,3 +85,46 @@ def test_goal_parse():
     assert result.exit_code == 0
     assert "Target variable: porosity" in result.output
     assert "Desired direction: decrease" in result.output
+
+
+def test_abl_inspect():
+    runner = CliRunner()
+    result = runner.invoke(
+        main, ["abl", "data/abl/reduce-porosity-loop.yaml"]
+    )
+    assert result.exit_code == 0
+    assert "ABL: ABL_DC_POROSITY_REDUCTION" in result.output
+    assert "Steps: 4" in result.output
+
+
+def test_abl_json():
+    runner = CliRunner()
+    result = runner.invoke(
+        main,
+        ["abl", "data/abl/reduce-porosity-loop.yaml", "--format", "json"],
+    )
+    assert result.exit_code == 0
+    assert '"id": "ABL_DC_POROSITY_REDUCTION"' in result.output
+
+
+def test_abl_missing_file():
+    runner = CliRunner()
+    result = runner.invoke(main, ["abl", "data/abl/nope.yaml"])
+    assert result.exit_code != 0
+    assert "Cannot read" in result.output
+
+
+def test_compile_from_abl():
+    runner = CliRunner()
+    result = runner.invoke(
+        main, ["compile", "--abl", "data/abl/reduce-porosity-loop.yaml"]
+    )
+    assert result.exit_code == 0
+    assert "Recommended ABCs: 3" in result.output
+
+
+def test_compile_requires_input():
+    runner = CliRunner()
+    result = runner.invoke(main, ["compile"])
+    assert result.exit_code != 0
+    assert "Provide GOAL text or --abl" in result.output

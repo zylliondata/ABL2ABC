@@ -1,5 +1,5 @@
 import json
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import click
 
@@ -145,14 +145,61 @@ def goal(goal_text: str, output_format: str) -> None:
 
 
 @main.command()
-@click.argument("goal")
+@click.argument("abl_path")
 @click.option("--format", "-f", "output_format", default="text")
-def compile(goal: str, output_format: str) -> None:  # noqa: A001
+def abl(abl_path: str, output_format: str) -> None:
+    """Inspect an Atomic Business Loop (ABL) definition."""
+    from amt2abc.parser.abl_parser import ABLParseError, ABLParser
+
+    try:
+        loop = ABLParser().load(abl_path)
+    except ABLParseError as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    if output_format == "json":
+        click.echo(
+            json.dumps(loop.model_dump(), ensure_ascii=False, indent=2)
+        )
+        return
+
+    click.echo(f"ABL: {loop.id} - {loop.name}")
+    click.echo(f"Domain: {loop.domain}")
+    click.echo(f"Goal: {loop.goal.text}")
+    click.echo(f"Trigger: {loop.trigger}")
+    click.echo(f"Steps: {len(loop.steps)}")
+    for step in loop.steps:
+        stage = step.secp_stage or "-"
+        click.echo(
+            f"  [{stage}] {step.name} ({step.actor or '-'})"
+        )
+    kpis = ", ".join(k.name for k in loop.kpis) if loop.kpis else "-"
+    click.echo(f"KPIs: {kpis}")
+
+
+@main.command()
+@click.argument("goal", required=False)
+@click.option("--abl", "abl_path", default=None, help="Compile an ABL YAML file")
+@click.option("--format", "-f", "output_format", default="text")
+def compile(  # noqa: A001
+    goal: Optional[str],
+    abl_path: Optional[str],
+    output_format: str,
+) -> None:
     """Compile a goal statement into recommended ABCs."""
     from amt2abc.compiler.pipeline import CompilerPipeline
+    from amt2abc.parser.abl_parser import ABLParseError, ABLParser
 
     pipeline = CompilerPipeline()
-    result: Dict[str, Any] = pipeline.compile(goal)
+    if abl_path:
+        try:
+            loop = ABLParser().load(abl_path)
+        except ABLParseError as exc:
+            raise click.ClickException(str(exc)) from exc
+        result: Dict[str, Any] = pipeline.compile_abl(loop)
+    elif goal:
+        result = pipeline.compile(goal)
+    else:
+        raise click.UsageError("Provide GOAL text or --abl <path>")
 
     if output_format == "json":
         click.echo(json.dumps(result, ensure_ascii=False, indent=2))

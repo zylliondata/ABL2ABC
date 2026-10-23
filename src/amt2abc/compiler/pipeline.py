@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Tuple
 from amt2abc.compiler.graph import AMTGraph
 from amt2abc.compiler.matcher import GraphMatcher
 from amt2abc.models.abc import ABC
+from amt2abc.models.abl import ABL
 from amt2abc.models.amt import AMT
 from amt2abc.parser.abc_parser import ABCParser
 from amt2abc.parser.amt_parser import AMTParser
@@ -78,3 +79,15 @@ class CompilerPipeline:
             "influencing_subgraph": subgraph,
             "recommended_abcs": recommended,
         }
+
+    def compile_abl(self, abl: ABL) -> Dict[str, Any]:
+        """Compile an Atomic Business Loop through its embedded goal."""
+        result = self.compile(abl.goal.text)
+        result["abl"] = {
+            "id": abl.id,
+            "name": abl.name,
+            "domain": abl.domain,
+            "steps": len(abl.steps),
+            "kpis": [k.name for k in abl.kpis],
+        }
+        return result

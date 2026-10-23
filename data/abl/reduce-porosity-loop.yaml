@@ -1,0 +1,54 @@
+id: ABL_DC_POROSITY_REDUCTION
+name: Die Casting Porosity Reduction Loop
+domain: die_casting
+goal:
+  text: Reduce porosity rate by 20% in die casting
+  domain: die_casting
+  target_variable: porosity_rate
+  desired_direction: decrease
+  priority: high
+  keywords:
+    - porosity
+    - die_casting
+  target:
+    variable: porosity_rate
+    direction: decrease
+    reduction_pct: 20
+    unit: "%"
+trigger: porosity defect rate exceeds 5% on the die-casting line
+actors:
+  - process_engineer
+  - quality_engineer
+  - line_operator
+steps:
+  - name: Detect porosity spike
+    actor: quality_engineer
+    description: Inspect X-ray images and compute porosity rate per shift
+    secp_stage: E
+  - name: Diagnose causal mechanism
+    actor: process_engineer
+    description: Match the porosity symptom against the AMT graph
+    secp_stage: S
+  - name: Apply capability change
+    actor: line_operator
+    description: Adjust mold temperature, shot speed and vacuum setpoints via ABCs
+    secp_stage: P
+  - name: Verify and close the loop
+    actor: quality_engineer
+    description: Re-measure porosity and confirm the reduction target
+    secp_stage: C
+kpis:
+  - name: porosity_rate
+    unit: "%"
+    target: 1.0
+    direction: decrease
+  - name: scrap_rate
+    unit: "%"
+    direction: decrease
+constraints:
+  - "tmax_die <= 220 degC"
+  - "cycle_time <= 60 s"
+outputs:
+  - porosity_reduction_plan
+  - abc_recommendation
+source: manufacturing_partner

@@ -4,6 +4,7 @@ from amt2abc.compiler.pipeline import CompilerPipeline
 from amt2abc.models.abc import ABC
 from amt2abc.models.amt import AMT, Triplet
 from amt2abc.models.gs import GoalStatement
+from amt2abc.parser.abl_parser import ABLParser
 
 
 def _amt(amt_id, triplets, name="test", domain="test"):
@@ -195,6 +196,16 @@ def test_pipeline_recommend_sums_scores():
             "avg_amt_score": 0.55,
         }
     ]
+
+
+def test_pipeline_compile_abl():
+    loop = ABLParser().load("data/abl/reduce-porosity-loop.yaml")
+    pipeline = CompilerPipeline()
+    result = pipeline.compile_abl(loop)
+    assert result["abl"]["id"] == "ABL_DC_POROSITY_REDUCTION"
+    assert result["abl"]["steps"] == 4
+    assert result["abl"]["kpis"] == ["porosity_rate", "scrap_rate"]
+    assert len(result["recommended_abcs"]) == 3
 
 
 def test_graph_matcher_target_resolution():
