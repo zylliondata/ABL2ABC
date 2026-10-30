@@ -2,6 +2,7 @@ from typing import Any, Dict, List, Tuple
 
 from amt2abc.compiler.graph import AMTGraph
 from amt2abc.compiler.matcher import GraphMatcher
+from amt2abc.compiler.validator import ABLValidator
 from amt2abc.models.abc import ABC
 from amt2abc.models.abl import ABL
 from amt2abc.models.amt import AMT
@@ -83,11 +84,17 @@ class CompilerPipeline:
     def compile_abl(self, abl: ABL) -> Dict[str, Any]:
         """Compile an Atomic Business Loop through its embedded goal."""
         result = self.compile(abl.goal.text)
+        validation = ABLValidator().validate(abl)
         result["abl"] = {
             "id": abl.id,
             "name": abl.name,
             "domain": abl.domain,
             "steps": len(abl.steps),
             "kpis": [k.name for k in abl.kpis],
+            "validation": {
+                "valid": validation.is_valid,
+                "errors": len(validation.errors),
+                "warnings": len(validation.warnings),
+            },
         }
         return result

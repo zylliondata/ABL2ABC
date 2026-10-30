@@ -177,6 +177,44 @@ def abl(abl_path: str, output_format: str) -> None:
 
 
 @main.command()
+@click.argument("abl_path")
+@click.option("--format", "-f", "output_format", default="text")
+def validate(abl_path: str, output_format: str) -> None:
+    """Validate an ABL definition for completeness."""
+    from amt2abc.compiler.validator import ABLValidator
+    from amt2abc.parser.abl_parser import ABLParseError, ABLParser
+
+    try:
+        loop = ABLParser().load(abl_path)
+    except ABLParseError as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    report = ABLValidator().validate(loop)
+
+    if output_format == "json":
+        click.echo(
+            json.dumps(report.to_dict(), ensure_ascii=False, indent=2)
+        )
+    else:
+        click.echo(f"ABL: {loop.id}")
+        click.echo(
+            f"Status: {'OK' if report.is_valid else 'INVALID'}"
+        )
+        for finding in report.findings:
+            click.echo(
+                f"  [{finding.level.upper()}] {finding.code}: "
+                f"{finding.message}"
+            )
+        click.echo(
+            f"Errors: {len(report.errors)}, "
+            f"Warnings: {len(report.warnings)}"
+        )
+
+    if not report.is_valid:
+        raise click.exceptions.Exit(1)
+
+
+@main.command()
 @click.argument("goal", required=False)
 @click.option("--abl", "abl_path", default=None, help="Compile an ABL YAML file")
 @click.option("--format", "-f", "output_format", default="text")
@@ -205,6 +243,14 @@ def compile(  # noqa: A001
         click.echo(json.dumps(result, ensure_ascii=False, indent=2))
         return
 
+    abl_info = result.get("abl")
+    if abl_info:
+        validation = abl_info["validation"]
+        status = "OK" if validation["valid"] else "INVALID"
+        click.echo(
+            f"ABL: {abl_info['id']} (validation: {status}, "
+            f"warnings={validation['warnings']})"
+        )
     click.echo(f"Goal: {result['goal']}")
     if result["target_variable"]:
         click.echo(

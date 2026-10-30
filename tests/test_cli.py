@@ -128,3 +128,59 @@ def test_compile_requires_input():
     result = runner.invoke(main, ["compile"])
     assert result.exit_code != 0
     assert "Provide GOAL text or --abl" in result.output
+
+
+def test_validate_bundled_abl():
+    runner = CliRunner()
+    result = runner.invoke(
+        main, ["validate", "data/abl/reduce-porosity-loop.yaml"]
+    )
+    assert result.exit_code == 0
+    assert "Status: OK" in result.output
+    assert "Errors: 0" in result.output
+
+
+def test_validate_json():
+    runner = CliRunner()
+    result = runner.invoke(
+        main,
+        [
+            "validate",
+            "data/abl/reduce-porosity-loop.yaml",
+            "--format",
+            "json",
+        ],
+    )
+    assert result.exit_code == 0
+    assert '"valid": true' in result.output
+
+
+def test_validate_invalid_abl(tmp_path):
+    path = tmp_path / "invalid.yaml"
+    path.write_text(
+        "id: ABL_BAD\nname: Bad\n"
+        "goal:\n  text: reduce porosity\n",
+        encoding="utf-8",
+    )
+    runner = CliRunner()
+    result = runner.invoke(main, ["validate", str(path)])
+    assert result.exit_code == 1
+    assert "Status: INVALID" in result.output
+    assert "ABL_GOAL_MISSING_TARGET" in result.output
+    assert "ABL_NO_STEPS" in result.output
+
+
+def test_validate_missing_file():
+    runner = CliRunner()
+    result = runner.invoke(main, ["validate", "data/abl/nope.yaml"])
+    assert result.exit_code != 0
+    assert "Cannot read" in result.output
+
+
+def test_compile_abl_reports_validation():
+    runner = CliRunner()
+    result = runner.invoke(
+        main, ["compile", "--abl", "data/abl/reduce-porosity-loop.yaml"]
+    )
+    assert result.exit_code == 0
+    assert "validation: OK" in result.output
